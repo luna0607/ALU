@@ -1,6 +1,8 @@
+import java.util.Arrays;
+
 /**
  * 模拟ALU进行整数和浮点数的四则运算
- * @author [请将此处修改为“学号_姓名”]
+ * @author [151250088_李雨倩]
  *
  */
 
@@ -19,19 +21,22 @@ public class ALU {
 		String binaryNumber=Integer.toBinaryString(originNumber);
 		char[] binaryNumber1=binaryNumber.toCharArray();
 		char[] finalBinaryNumber=new char[length];
-        /**
-         * 如果二进制数比length长，只取后length位，否则补0或1
-         */
+		/**
+		 * 如果二进制数比length长，只取后length位，否则补0或1
+		 */
 		if(binaryNumber.length()>length){
-			for(int i=length-1;i>=0;i--){
-				finalBinaryNumber[i]=binaryNumber1[i];
+			for(int i=1;i<=length;i++){
+				finalBinaryNumber[length-i]=binaryNumber1[binaryNumber.length()-i];
 			}
 		}
 		else{
+			for(int i=1;i<=binaryNumber1.length;i++){
+				finalBinaryNumber[length-i]=binaryNumber1[binaryNumber.length()-i];
+			}
 			char[] numbers=number.toCharArray();
-            /**
-             * 如果原number是负数，未初始化的地方要补1，否则补0
-             */
+			/**
+			 * 如果原number是负数，未初始化的地方要补1，否则补0
+			 */
 			if(numbers[0]=='-'){
 				for (int i=0;i<finalBinaryNumber.length;i++) {
 					if(finalBinaryNumber[i]==0){
@@ -65,7 +70,6 @@ public class ALU {
 		// TODO YOUR CODE HERE.
 		return null;
 	}
-	
 	/**
 	 * 生成十进制浮点数的IEEE 754表示，要求调用{@link #floatRepresentation(String, int, int) floatRepresentation}实现。<br/>
 	 * 例：ieee754("11.375", 32)
@@ -86,7 +90,47 @@ public class ALU {
 	 */
 	public String integerTrueValue (String operand) {
 		// TODO YOUR CODE HERE.
-		return null;
+		int trueValue=0;
+		char[] operandChar=operand.toCharArray();
+		String binTrueValueString="";
+
+		if(operand.charAt(0)=='0'){
+			for(int i=1;i<=operandChar.length-1;i++){
+				trueValue=trueValue+Integer.parseInt(String.valueOf(operandChar[i]))
+						*(int)Math.pow(2,(double)(operandChar.length-i-1));
+			}
+			return String.valueOf(trueValue);
+		}
+		else{
+			for(int i=0;i<operandChar.length;i++){
+				trueValue=trueValue+Integer.parseInt(String.valueOf(operandChar[i]))
+						*(int)Math.pow(2,(double)(operandChar.length-i-1));
+			}
+
+			trueValue=trueValue-1;//减一
+
+			binTrueValueString=Integer.toBinaryString(trueValue);
+
+			char[] binTrueValueChar=new char[binTrueValueString.length()];
+			for(int i=0;i<binTrueValueString.length();i++){
+				if(binTrueValueString.charAt(i)=='0'){
+					binTrueValueChar[i]='1';
+				}
+				else{
+					binTrueValueChar[i]='0';
+				}
+			}//取反
+			for(int i=0;i<binTrueValueChar.length;i++){
+				trueValue=0;
+				trueValue=trueValue+Integer.parseInt(String.valueOf(binTrueValueChar[i]))
+						*(int)Math.pow(2,(double)(binTrueValueChar.length-i-1));
+			}
+			if(trueValue==0){
+				return String.valueOf(trueValue);
+			}
+			else
+			return "-"+String.valueOf(trueValue);
+		}
 	}
 	
 	/**
@@ -110,7 +154,16 @@ public class ALU {
 	 */
 	public String negation (String operand) {
 		// TODO YOUR CODE HERE.
-		return null;
+		char[]negation=new char[operand.length()];
+		for(int i=0;i<operand.length();i++){
+			if(operand.charAt(i)=='0'){
+				negation[i]='1';
+			}
+			else {
+				negation[i]='0';
+			}
+		}
+		return String.valueOf(negation);
 	}
 	
 	/**
@@ -120,9 +173,17 @@ public class ALU {
 	 * @param n 左移的位数
 	 * @return operand左移n位的结果
 	 */
+
 	public String leftShift (String operand, int n) {
 		// TODO YOUR CODE HERE.
-		return null;
+		char[] leftshift=new char[operand.length()+n];
+		for(int i=0;i<leftshift.length-n;i++){
+			leftshift[i]=operand.charAt(i);
+		}
+		for(int i=operand.length();i<leftshift.length;i++){
+			leftshift[i]='0';
+		}
+		return String.valueOf(leftshift);
 	}
 	
 	/**
@@ -134,7 +195,14 @@ public class ALU {
 	 */
 	public String logRightShift (String operand, int n) {
 		// TODO YOUR CODE HERE.
-		return null;
+		char[] logRightShift=new char[operand.length()];
+		for(int i=0;i<n;i++){
+			logRightShift[i]='0';
+		}
+		for(int i=0;i<operand.length()-n;i++){
+			logRightShift[n+i]=operand.charAt(i);
+		}
+		return String.valueOf(logRightShift);
 	}
 	
 	/**
@@ -146,7 +214,14 @@ public class ALU {
 	 */
 	public String ariRightShift (String operand, int n) {
 		// TODO YOUR CODE HERE.
-		return null;
+		char[] ariRightShift=new char[operand.length()];
+		for(int i=0;i<n;i++){
+			ariRightShift[i]=operand.charAt(0);
+		}
+		for (int i=0;i<operand.length()-n;i++){
+			ariRightShift[n+i]=operand.charAt(i);
+		}
+		return String.valueOf(ariRightShift);
 	}
 	
 	/**
@@ -159,7 +234,27 @@ public class ALU {
 	 */
 	public String fullAdder (char x, char y, char c) {
 		// TODO YOUR CODE HERE.
-		return null;
+		int counter=0;
+		if(x=='1'){
+			counter++;
+		}
+		if(y=='1'){
+			counter++;
+		}
+		if(c=='1'){
+			counter++;
+		}
+
+		switch (counter) {
+			case 1:
+				return "01";
+			case 2:
+				return "10";
+			case 3:
+				return "11";
+			default:
+				return "00";
+		}
 	}
 	
 	/**
@@ -172,8 +267,34 @@ public class ALU {
 	 */
 	public String claAdder (String operand1, String operand2, char c) {
 		// TODO YOUR CODE HERE.
-		return null;
+		int[] c1=new int[5];
+		int[]c2=new int[5];
+		c1[4]=Integer.parseInt(String.valueOf(operand1.charAt(3)))*Integer.parseInt(String.valueOf(operand2.charAt(3)))
+				+(Integer.parseInt(String.valueOf(operand1.charAt(3)))^Integer.parseInt(String.valueOf(operand2.charAt(3))))
+				*Integer.parseInt(String.valueOf(c));
+		System.out.println("c4 is "+c1[4]);
+		for(int i=3;i>=1;i--){
+			c1[i]=Integer.parseInt(String.valueOf(operand1.charAt(i-1)))*Integer.parseInt(String.valueOf(operand2.charAt(i-1)))
+					+(Integer.parseInt(String.valueOf(operand1.charAt(i-1)))^Integer.parseInt(String.valueOf(operand2.charAt(i-1))))
+					*c1[i+1];
+			System.out.println("c"+i+" is "+c1[i]);
+		}
+		for(int i=4;i>=2;i--){
+			c2[i]=(Integer.parseInt(String.valueOf(operand1.charAt(i-1)))^Integer.parseInt(String.valueOf(operand2.charAt(i-1))))
+					^c1[i];
+		}
+		c2[0]=c1[0];
+		StringBuilder sb;
+		sb = new StringBuilder();
+		for(int i=0;i<c2.length;i++){
+			sb.append(String.valueOf(c2[i]));
+		}
+
+		return sb.toString();
 	}
+	/**
+	 * 以上方法在算ci时有问题。全加器
+	 */
 	
 	/**
 	 * 加一器，实现操作数加1的运算。
